@@ -94,9 +94,10 @@
           <proc>full</proc>
           <compilerArgs>
             <arg>-parameters</arg>
-            <arg>-processor</arg>
-            <arg>lombok.launch.AnnotationProcessorHider$AnnotationProcessor</arg>
           </compilerArgs>
+          <annotationProcessors>
+            <annotationProcessor>lombok.launch.AnnotationProcessorHider$AnnotationProcessor</annotationProcessor>
+          </annotationProcessors>
           <annotationProcessorPaths>
             <path>
               <groupId>org.projectlombok</groupId>
