@@ -1,0 +1,1 @@
+package com.collabspace.dto; import jakarta.validation.constraints.*; public final class UserDtos {private UserDtos(){} public record UpdateProfileRequest(@NotBlank @Size(min=3,max=40) String username,@NotBlank @Email String email,String profilePicture){} }

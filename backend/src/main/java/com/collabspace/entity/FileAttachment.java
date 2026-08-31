@@ -1,0 +1,4 @@
+package com.collabspace.entity;
+import jakarta.persistence.*; import lombok.*; import java.time.Instant; import java.util.UUID;
+@Entity @Table(name="file_attachments") @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+public class FileAttachment { @Id @GeneratedValue(strategy=GenerationType.UUID) private UUID id; @ManyToOne(fetch=FetchType.LAZY,optional=false) private User uploader; @ManyToOne(fetch=FetchType.LAZY) private Message message; @Column(nullable=false) private String originalName; @Column(nullable=false) private String storedName; @Column(nullable=false) private String contentType; @Column(nullable=false) private long size; @Column(nullable=false,updatable=false) @Builder.Default private Instant createdAt=Instant.now(); }

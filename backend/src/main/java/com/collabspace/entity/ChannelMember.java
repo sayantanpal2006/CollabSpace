@@ -1,0 +1,4 @@
+package com.collabspace.entity;
+import jakarta.persistence.*; import lombok.*; import java.time.Instant; import java.util.UUID;
+@Entity @Table(name="channel_members",uniqueConstraints=@UniqueConstraint(name="uk_channel_user",columnNames={"channel_id","user_id"}),indexes=@Index(name="idx_cm_channel",columnList="channel_id")) @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+public class ChannelMember { @Id @GeneratedValue(strategy=GenerationType.UUID) private UUID id; @ManyToOne(fetch=FetchType.LAZY,optional=false) private Channel channel; @ManyToOne(fetch=FetchType.LAZY,optional=false) private User user; @Column(nullable=false) @Builder.Default private Instant joinedAt=Instant.now(); }

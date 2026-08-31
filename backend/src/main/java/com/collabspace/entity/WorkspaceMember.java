@@ -1,0 +1,4 @@
+package com.collabspace.entity;
+import jakarta.persistence.*; import lombok.*; import java.time.Instant; import java.util.UUID;
+@Entity @Table(name="workspace_members",uniqueConstraints=@UniqueConstraint(name="uk_workspace_user",columnNames={"workspace_id","user_id"}),indexes={@Index(name="idx_wm_workspace",columnList="workspace_id"),@Index(name="idx_wm_user",columnList="user_id")}) @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+public class WorkspaceMember { @Id @GeneratedValue(strategy=GenerationType.UUID) private UUID id; @ManyToOne(fetch=FetchType.LAZY,optional=false) private Workspace workspace; @ManyToOne(fetch=FetchType.LAZY,optional=false) private User user; @Enumerated(EnumType.STRING) @Column(nullable=false) private WorkspaceRole role; @Column(nullable=false) @Builder.Default private Instant joinedAt=Instant.now(); }

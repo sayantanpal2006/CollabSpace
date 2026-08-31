@@ -1,0 +1,1 @@
+package com.collabspace.repository; import com.collabspace.entity.Workspace; import org.springframework.data.jpa.repository.JpaRepository; import java.util.*; public interface WorkspaceRepository extends JpaRepository<Workspace,UUID>{List<Workspace> findByOwnerId(UUID ownerId);}

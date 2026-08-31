@@ -1,0 +1,1 @@
+export default function Settings(){return <div className="simple-page"><h1>Settings</h1><div className="settings-card"><h3>Application</h3><p>CollabSpace is configured for real-time team collaboration.</p><hr/><h3>Security</h3><p>Authentication uses JWT sessions and BCrypt password hashing on the backend.</p></div></div>}

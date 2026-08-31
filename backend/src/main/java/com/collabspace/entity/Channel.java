@@ -1,0 +1,4 @@
+package com.collabspace.entity;
+import jakarta.persistence.*; import lombok.*; import java.time.Instant; import java.util.UUID;
+@Entity @Table(name="channels",indexes={@Index(name="idx_channel_workspace",columnList="workspace_id")}) @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+public class Channel { @Id @GeneratedValue(strategy=GenerationType.UUID) private UUID id; @ManyToOne(fetch=FetchType.LAZY,optional=false) private Workspace workspace; @Column(nullable=false,length=60) private String name; @Column(length=300) private String description; @Column(nullable=false) @Builder.Default private boolean privateChannel=false; @ManyToOne(fetch=FetchType.LAZY,optional=false) private User createdBy; @Column(nullable=false,updatable=false) @Builder.Default private Instant createdAt=Instant.now(); @Column(nullable=false) @Builder.Default private Instant updatedAt=Instant.now(); @PreUpdate void touch(){updatedAt=Instant.now();} }

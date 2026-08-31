@@ -1,0 +1,1 @@
+package com.collabspace.dto; import java.util.*; public record NotificationResponse(UUID id,String type,String message,boolean read,java.time.Instant createdAt) {}

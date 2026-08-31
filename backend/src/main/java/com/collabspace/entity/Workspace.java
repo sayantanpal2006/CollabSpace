@@ -1,0 +1,4 @@
+package com.collabspace.entity;
+import jakarta.persistence.*; import lombok.*; import java.time.Instant; import java.util.UUID;
+@Entity @Table(name="workspaces") @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+public class Workspace { @Id @GeneratedValue(strategy=GenerationType.UUID) private UUID id; @Column(nullable=false,length=80) private String name; @Column(length=500) private String description; @ManyToOne(fetch=FetchType.LAZY,optional=false) private User owner; @Column(nullable=false) @Builder.Default private Instant createdAt=Instant.now(); @Column(nullable=false) @Builder.Default private Instant updatedAt=Instant.now(); @PreUpdate void touch(){updatedAt=Instant.now();} }

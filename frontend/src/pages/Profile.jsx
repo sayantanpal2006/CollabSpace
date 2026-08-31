@@ -1,0 +1,1 @@
+import {useAuth} from '../context/AuthContext';export default function Profile(){const {user}=useAuth();return <div className="simple-page"><h1>Profile</h1><div className="profile-card"><div className="avatar big">{user?.username?.slice(0,1).toUpperCase()}</div><h2>{user?.username}</h2><p>{user?.email}</p><span className="badge">{user?.status}</span></div></div>}

@@ -1,0 +1,1 @@
+package com.collabspace.repository; import com.collabspace.entity.*; import org.springframework.data.domain.*; import org.springframework.data.jpa.repository.JpaRepository; import java.util.*; public interface DirectMessageRepository extends JpaRepository<DirectMessage,UUID>{Page<DirectMessage> findByConversationIdAndDeletedFalseOrderByCreatedAtDesc(UUID id,Pageable p);}

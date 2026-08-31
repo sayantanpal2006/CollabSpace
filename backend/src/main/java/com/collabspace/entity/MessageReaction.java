@@ -1,0 +1,4 @@
+package com.collabspace.entity;
+import jakarta.persistence.*; import lombok.*; import java.time.Instant; import java.util.UUID;
+@Entity @Table(name="message_reactions",uniqueConstraints=@UniqueConstraint(name="uk_reaction",columnNames={"message_id","user_id","emoji"})) @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+public class MessageReaction { @Id @GeneratedValue(strategy=GenerationType.UUID) private UUID id; @ManyToOne(fetch=FetchType.LAZY,optional=false) private Message message; @ManyToOne(fetch=FetchType.LAZY,optional=false) private User user; @Column(nullable=false,length=16) private String emoji; @Column(nullable=false) @Builder.Default private Instant createdAt=Instant.now(); }

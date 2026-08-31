@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: collabspace-backend
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/collabspace}
+    username: ${DATABASE_USERNAME:collabspace}
+    password: ${DATABASE_PASSWORD:collabspace}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+  servlet:
+    multipart:
+      max-file-size: ${MAX_FILE_SIZE:10MB}
+      max-request-size: ${MAX_REQUEST_SIZE:20MB}
+server:
+  port: ${SERVER_PORT:8080}
+app:
+  frontend-url: ${FRONTEND_URL:http://localhost:5173}
+  jwt:
+    secret: ${JWT_SECRET:dev-only-change-this-secret-to-a-long-random-value-please-123456789}
+    expiration: ${JWT_EXPIRATION:86400000}
+  file:
+    upload-dir: ${FILE_UPLOAD_DIR:./uploads}
+SEED_DATA: ${SEED_DATA:false}
+springdoc:
+  api-docs.path: /api-docs
+  swagger-ui.path: /swagger-ui.html
+logging.level.com.collabspace: INFO
