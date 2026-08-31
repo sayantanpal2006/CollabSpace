@@ -76,10 +76,10 @@ public class FileController {
 
         if (!resource.exists()) throw new NoSuchElementException("File not found");
 
-        String safeName = a.getOriginalName().replace(""", "");
+        String safeName = a.getOriginalName().replaceAll("[^a-zA-Z0-9._-]", "_");
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(a.getContentType()))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename="" + safeName + """)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + safeName)
                 .body(resource);
     }
 }
