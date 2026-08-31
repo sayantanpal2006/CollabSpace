@@ -14,7 +14,7 @@
   <version>1.0.0</version>
   <properties>
     <java.version>21</java.version>
-    <lombok.version>1.18.38</lombok.version>
+    <lombok.version>1.18.42</lombok.version>
   </properties>
   <dependencies>
     <dependency>
@@ -94,6 +94,8 @@
           <proc>full</proc>
           <compilerArgs>
             <arg>-parameters</arg>
+            <arg>-processor</arg>
+            <arg>lombok.launch.AnnotationProcessorHider$AnnotationProcessor</arg>
           </compilerArgs>
           <annotationProcessorPaths>
             <path>
