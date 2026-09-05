@@ -1,211 +1,101 @@
-# CollabSpace
+# CollabSpace (Discord-style + AI MVP)
 
-A production-style real-time collaboration platform inspired by Slack, Discord and Microsoft Teams. Built as a modular monolith for a Java full-stack portfolio.
+CollabSpace is a full-stack collaboration app inspired by Discord, with workspace/channel chat, roles/permissions, real-time messaging, and integrated AI assistant utilities.
 
-## Stack
+## Architecture overview
 
-- Java 21 + Spring Boot 3.5
-- Spring Web, Spring Security, Spring Data JPA
-- JWT + BCrypt
-- WebSocket + STOMP + SockJS
-- PostgreSQL
-- Redis
-- React + Vite + JavaScript
-- Axios + React Router + STOMP.js
-- Docker Compose
-- OpenAPI / Swagger
+- **Frontend:** React + Vite web client (`/frontend`)
+- **Backend:** Spring Boot API + WebSocket gateway (`/backend`)
+- **Data:** PostgreSQL via Spring Data JPA entities/repositories
+- **Realtime:** STOMP over WebSocket (`/ws`)
+- **Infra:** Redis for presence/rate limiting
 
-## Features implemented
+## Feature checklist
 
-- JWT registration/login/current-user flow
-- BCrypt password hashing
-- Workspace creation, membership and role authorization
-- Public/private channels and channel membership
-- Persistent channel messages with pagination
-- Real-time STOMP channel messaging
-- Message edit/delete and reactions
-- Direct-message conversation/history APIs
-- Online/offline presence stored in PostgreSQL and Redis
-- Typing-event WebSocket foundation
-- Notifications API
-- Secure local file upload/download with size/type validation
-- PostgreSQL message search
-- Redis-backed authentication rate limiting
-- Global API error handling
-- Swagger/OpenAPI
-- Responsive React UI
-- Docker Compose for PostgreSQL, Redis, backend and frontend
-- Optional development seed data
+- [x] JWT auth (register/login/me), profile/settings pages
+- [x] Workspace/server model with members + roles (`OWNER/ADMIN/MEMBER`)
+- [x] Channel categories + text channels
+- [x] Invite flow (create/list/revoke/accept invite token)
+- [x] Real-time channel chat
+- [x] Typing indicators and presence updates
+- [x] Message pagination/history + reactions + thread replies (`replyTo`)
+- [x] Mentions/reply notifications in-app
+- [x] Message search
+- [x] AI assistant panel:
+  - [x] Summarize recent channel messages
+  - [x] Draft reply to selected thread message
+  - [x] Extract action items
+- [x] AI moderation helper with soft moderator alerts
+- [x] AI provider abstraction with graceful fallback when key is missing
+- [x] Seed data for demo workspace/users/channels/messages
+- [x] Focused service tests for moderation + AI fallback
 
-## Run with Docker
+## Local setup
 
-1. Copy `.env.example` to `.env`.
-2. Replace `JWT_SECRET` with a long random value.
-3. Run:
+### 1) Configure environment
+
+Copy env files:
+
+```bash
+cp .env.example .env
+cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env
+```
+
+Optional AI config in `.env` / `backend/.env`:
+
+- `AI_API_KEY` (leave empty to use fallback mode)
+- `AI_BASE_URL` (default `https://api.openai.com`)
+- `AI_MODEL` (default `gpt-4o-mini`)
+
+### 2) Run with Docker (single command sequence)
 
 ```bash
 docker compose up --build
 ```
 
-Open `http://localhost:5173`.
+- Frontend: `http://localhost:5173`
+- Backend API: `http://localhost:8080`
+- Swagger: `http://localhost:8080/swagger-ui.html`
 
-Swagger: `http://localhost:8080/swagger-ui.html`
+### 3) Demo credentials (seed)
 
-To seed development data, keep `SEED_DATA=true` on the first startup. Development-only credentials:
+When `SEED_DATA=true` on first run:
 
 - `admin@example.com` / `Admin@12345`
 - `user@example.com` / `User@12345`
 
-Change/remove these credentials before any non-development deployment.
-
-## Local development
+## Scripts
 
 ### Backend
-
-Requirements: Java 21, Maven, PostgreSQL and Redis.
 
 ```bash
 cd backend
 mvn spring-boot:run
+mvn test
 ```
 
 ### Frontend
-
-Requirements: Node.js 20+.
 
 ```bash
 cd frontend
 npm install
 npm run dev
+npm run build
 ```
 
-## API
+## AI behavior
 
-Authentication:
+AI endpoints:
 
-- POST `/api/auth/register`
-- POST `/api/auth/login`
-- POST `/api/auth/logout`
-- GET `/api/auth/me`
+- `GET /api/ai/channels/{channelId}/summarize`
+- `POST /api/ai/channels/{channelId}/draft-reply`
+- `GET /api/ai/channels/{channelId}/action-items`
 
-Users:
+If `AI_API_KEY` is missing (or provider call fails), the app automatically returns deterministic fallback outputs so the assistant panel remains usable.
 
-- GET `/api/users/me`
-- PUT `/api/users/me`
+## Future work (beyond MVP)
 
-Workspaces:
-
-- GET `/api/workspaces`
-- POST `/api/workspaces`
-- GET `/api/workspaces/{id}`
-- PUT `/api/workspaces/{id}`
-- DELETE `/api/workspaces/{id}`
-- POST `/api/workspaces/{id}/members`
-- DELETE `/api/workspaces/{id}/members/{userId}`
-
-Channels:
-
-- GET `/api/workspaces/{workspaceId}/channels`
-- POST `/api/workspaces/{workspaceId}/channels`
-- PUT `/api/channels/{id}`
-- DELETE `/api/channels/{id}`
-- POST `/api/channels/{id}/join`
-- POST `/api/channels/{id}/leave`
-
-Messages:
-
-- GET `/api/channels/{channelId}/messages`
-- PUT `/api/messages/{id}`
-- DELETE `/api/messages/{id}`
-- POST `/api/messages/{id}/reactions`
-- GET `/api/messages/search?workspaceId=...&q=...`
-
-Direct messages:
-
-- GET `/api/conversations`
-- POST `/api/conversations/{userId}/messages`
-- GET `/api/conversations/{userId}/messages`
-
-Notifications:
-
-- GET `/api/notifications`
-- GET `/api/notifications/unread-count`
-- PUT `/api/notifications/{id}/read`
-
-Files:
-
-- POST `/api/files`
-- GET `/api/files/{id}`
-
-## WebSocket
-
-STOMP endpoint:
-
-`/ws`
-
-Channel send:
-
-`/app/chat.send`
-
-Required native STOMP header:
-
-`channelId: <channel UUID>`
-
-Channel subscription:
-
-`/topic/channel/{channelId}`
-
-Typing:
-
-`/app/typing`
-
-Typing subscription:
-
-`/topic/channel/{channelId}/typing`
-
-Direct-message send:
-
-`/app/dm.send`
-
-Direct-message user queue:
-
-`/user/queue/messages`
-
-JWT is sent in the STOMP CONNECT `Authorization: Bearer <token>` header.
-
-## Database
-
-Main tables/entities:
-
-- users
-- workspaces
-- workspace_members
-- channels
-- channel_members
-- messages
-- direct_conversations
-- direct_messages
-- message_reactions
-- notifications
-- file_attachments
-
-Indexes are focused on high-frequency membership, channel-message history, sender and notification lookups.
-
-## Security
-
-- Passwords are never returned by DTOs.
-- JWT secret and database credentials come from environment variables.
-- Workspace and channel membership is checked server-side.
-- Users cannot edit/delete another user's message.
-- Private channels require membership.
-- Uploaded files are limited by size and MIME type and use generated storage names.
-- Global exception handling avoids returning stack traces.
-- Authentication endpoints have Redis-backed request limiting.
-
-## Scaling path
-
-The first version is intentionally a modular monolith. Redis is already used for presence and rate limiting. For horizontal scaling, WebSocket events can be moved from the in-memory simple broker to a shared broker/Redis Pub/Sub strategy while keeping the domain modules in one deployable application.
-
-## Portfolio talking points
-
-This project demonstrates REST API design, Spring Security/JWT, JPA data modelling, authorization/IDOR prevention, WebSockets/STOMP, Redis, PostgreSQL indexing, pagination, file security, Docker and a React client consuming both REST and real-time APIs.
+- Voice/video parity (WebRTC rooms, SFU integration, moderation controls)
+- Rich permission matrix per channel/action
+- Advanced thread UI and notification preferences
